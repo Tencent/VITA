@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
 import time
-from vita.constants import GLOBAL_WEIGHTS_PATH
 
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from vita.constants import GLOBAL_WEIGHTS_PATH
 
 model_dir = f"{GLOBAL_WEIGHTS_PATH}/Mixtral-8x7B_modVocab/mg2hg"
 tokenizer = AutoTokenizer.from_pretrained(model_dir)
@@ -21,21 +22,20 @@ input_ids = input_ids.to("cuda")
 
 
 model = AutoModelForCausalLM.from_pretrained(
-#    model_dir, torch_dtype=torch.float16, device_map="auto",attn_implementation="flash_attention_2").eval()
-    model_dir, torch_dtype=torch.float16, device_map="auto").eval()
+    #    model_dir, torch_dtype=torch.float16, device_map="auto",attn_implementation="flash_attention_2").eval()
+    model_dir,
+    torch_dtype=torch.float16,
+    device_map="auto",
+).eval()
 
 start_time = time.time()
 outputs = model.generate(input_ids, max_new_tokens=10)
 time_consume = time.time() - start_time
 
 outputs = outputs.cpu().numpy()[0]
-outputs = outputs[len(input_ids[0]):]
-output_text = tokenizer.decode(
-    outputs, skip_special_tokens=True)
+outputs = outputs[len(input_ids[0]) :]
+output_text = tokenizer.decode(outputs, skip_special_tokens=True)
 
 
 print(output_text)
-print(f'Time consume: {time_consume}')
-
-
-
+print(f"Time consume: {time_consume}")
