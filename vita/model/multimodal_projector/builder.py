@@ -1,10 +1,12 @@
-import re
 import math
-from torch import nn
+import re
 from functools import partial
+
+from torch import nn
+
 from timm.layers.norm_act import LayerNormAct2d
-from torchvision.ops.misc import SqueezeExcitation as SELayer
 from torchvision.models.mobilenetv3 import InvertedResidual, InvertedResidualConfig
+from torchvision.ops.misc import SqueezeExcitation as SELayer
 
 
 class IdentityMap(nn.Module):
@@ -16,7 +18,7 @@ class IdentityMap(nn.Module):
 
     @property
     def config(self):
-        return {"mm_projector_type": 'identity'}
+        return {"mm_projector_type": "identity"}
 
 
 class Minigpt(nn.Module):
@@ -79,13 +81,15 @@ class LDPBlock(nn.Module):
         inc, ouc = config.mm_hidden_size, config.hidden_size
         layer_norm = partial(LayerNormAct2d, act_layer=None)
         se_layer = partial(SELayer, scale_activation=nn.Hardsigmoid)
-        self.mlp = nn.Sequential(
-            nn.Identity(), nn.Linear(inc, ouc), nn.GELU(), nn.Linear(ouc, ouc)
-        )
+        self.mlp = nn.Sequential(nn.Identity(), nn.Linear(inc, ouc), nn.GELU(), nn.Linear(ouc, ouc))
         self.mb_block = nn.Sequential(
             nn.Identity(),
-            InvertedResidual(InvertedResidualConfig(ouc, 3, ouc, ouc, True, "HS", 1, 1, 1), layer_norm, se_layer),
-            InvertedResidual(InvertedResidualConfig(ouc, 3, ouc, ouc, True, "HS", 2, 1, 1), layer_norm, se_layer)
+            InvertedResidual(
+                InvertedResidualConfig(ouc, 3, ouc, ouc, True, "HS", 1, 1, 1), layer_norm, se_layer
+            ),
+            InvertedResidual(
+                InvertedResidualConfig(ouc, 3, ouc, ouc, True, "HS", 2, 1, 1), layer_norm, se_layer
+            ),
         )
 
     def forward(self, x):
@@ -99,7 +103,6 @@ class LDPBlock(nn.Module):
 
 
 class LDPNetProjector(nn.Module):
-
     def __init__(self, config=None):
         super().__init__()
         self.model = LDPBlock(config)
@@ -109,8 +112,7 @@ class LDPNetProjector(nn.Module):
 
 
 class SPP(nn.Module):
-
-    def __init__(self, config=None, projector_type='v1'):
+    def __init__(self, config=None, projector_type="v1"):
         super().__init__()
 
         self.projector_type = projector_type
@@ -127,19 +129,19 @@ class SPP(nn.Module):
     def forward(self, x):
         b, num_tokens, c = x.shape
         h = int(math.sqrt(num_tokens))
-        if 'v1' in self.projector_type:
+        if "v1" in self.projector_type:
             x = self.linear_1(x)
             x = x.permute(0, 2, 1).reshape(b, -1, h, h)
             x = self.pooling(x)
             x = x.flatten(2).permute(0, 2, 1)
             x = self.linear_2(x)
-        elif 'v2' in self.projector_type:
+        elif "v2" in self.projector_type:
             x = self.linear_1(x)
             x = self.linear_2(x)
             x = x.permute(0, 2, 1).reshape(b, -1, h, h)
             x = self.pooling(x)
             x = x.flatten(2).permute(0, 2, 1)
-        elif 'v3' in self.projector_type:
+        elif "v3" in self.projector_type:
             x = self.linear_0(x)
             x = x.permute(0, 2, 1).reshape(b, -1, h, h)
             x = self.pooling(x)
@@ -150,34 +152,34 @@ class SPP(nn.Module):
 
 
 def build_vision_projector(config, delay_load=False, **kwargs):
-    projector_type = getattr(config, 'mm_projector_type', 'mlp2x_gelu')
+    projector_type = getattr(config, "mm_projector_type", "mlp2x_gelu")
 
-    if projector_type == 'linear':
+    if projector_type == "linear":
         return nn.Linear(config.mm_hidden_size, config.hidden_size)
 
-    elif projector_type.startswith('mlp'):
-        mlp_gelu_match = re.match(r'^mlp(\d+)x_gelu$', projector_type)
+    elif projector_type.startswith("mlp"):
+        mlp_gelu_match = re.match(r"^mlp(\d+)x_gelu$", projector_type)
         if mlp_gelu_match:
             mlp_depth = int(mlp_gelu_match.group(1))
-            modules = [nn.Linear(config.mm_hidden_size*5, config.hidden_size)]
+            modules = [nn.Linear(config.mm_hidden_size * 5, config.hidden_size)]
             for _ in range(1, mlp_depth):
                 modules.append(nn.GELU())
                 modules.append(nn.Linear(config.hidden_size, config.hidden_size))
             return nn.Sequential(*modules)
 
-    elif projector_type.startswith('spp'):
+    elif projector_type.startswith("spp"):
         return SPP(config, projector_type)
 
-    elif projector_type == 'ldp':
+    elif projector_type == "ldp":
         return LDPNetProjector(config)
 
-    elif projector_type == 'vanilla':
+    elif projector_type == "vanilla":
         return Vanilla(config)
 
-    elif projector_type == 'minigpt':
+    elif projector_type == "minigpt":
         return Minigpt(config)
 
-    elif projector_type == 'identity':
+    elif projector_type == "identity":
         return IdentityMap()
 
-    raise ValueError(f'Unknown projector type: {projector_type}')
+    raise ValueError(f"Unknown projector type: {projector_type}")

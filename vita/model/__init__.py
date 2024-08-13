@@ -1,2 +1,1 @@
-from .language_model.vita_mixtral import VITAMixtralForCausalLM, VITAMixtralConfig
-
+from .language_model.vita_mixtral import VITAMixtralConfig, VITAMixtralForCausalLM

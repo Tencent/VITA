@@ -7,8 +7,4 @@ DataConfig = {
     "Pretrain_video": NaturalCap0,
 }
 
-NoPatchSets = [
-    "khair",
-    "jester"
-]
-
+NoPatchSets = ["khair", "jester"]

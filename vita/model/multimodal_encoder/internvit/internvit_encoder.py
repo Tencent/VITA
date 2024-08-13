@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
+from transformers import AutoConfig, AutoModel, CLIPImageProcessor
 
-from transformers import AutoModel, CLIPImageProcessor, AutoConfig
 from .modeling_intern_vit import InternVisionModel
 
 
@@ -18,12 +18,16 @@ class InternViTVisionTower(nn.Module):
         if not delay_load:
             self.load_model()
         else:
-            self.cfg_only = AutoConfig.from_pretrained(self.vision_tower_name, trust_remote_code=True)
+            self.cfg_only = AutoConfig.from_pretrained(
+                self.vision_tower_name, trust_remote_code=True
+            )
 
     def load_model(self):
         self.image_processor = CLIPImageProcessor.from_pretrained(self.vision_tower_name)
-        #self.vision_tower = AutoModel.from_pretrained(self.vision_tower_name, trust_remote_code=True)
-        self.vision_tower = InternVisionModel.from_pretrained(self.vision_tower_name, trust_remote_code=True)
+        # self.vision_tower = AutoModel.from_pretrained(self.vision_tower_name, trust_remote_code=True)
+        self.vision_tower = InternVisionModel.from_pretrained(
+            self.vision_tower_name, trust_remote_code=True
+        )
         self.vision_tower.requires_grad_(False)
 
         self.is_loaded = True
@@ -42,8 +46,9 @@ class InternViTVisionTower(nn.Module):
         # N, W, H * scale, C // scale --> N, H * scale, W, C // scale
         x = x.permute(0, 2, 1, 3).contiguous()
         # N, H * scale, W, C // scale --> N, H * scale, W * scale, C // (scale ** 2)
-        x = x.view(n, int(h * scale_factor), int(w * scale_factor),
-                   int(c / (scale_factor * scale_factor)))
+        x = x.view(
+            n, int(h * scale_factor), int(w * scale_factor), int(c / (scale_factor * scale_factor))
+        )
         x = x.permute(0, 2, 1, 3).contiguous()
         return x
 
@@ -52,19 +57,24 @@ class InternViTVisionTower(nn.Module):
         if type(images) is list:
             image_features = []
             for image in images:
-                image_forward_out = self.vision_tower(image.to(device=self.device, dtype=self.dtype).unsqueeze(0),
-                                                      output_hidden_states=True)
+                image_forward_out = self.vision_tower(
+                    image.to(device=self.device, dtype=self.dtype).unsqueeze(0),
+                    output_hidden_states=True,
+                )
                 image_feature = self.feature_select(image_forward_out).to(image.dtype)
                 image_features.append(image_feature)
         else:
-            image_forward_outs = self.vision_tower(images.to(device=self.device, dtype=self.dtype),
-                                                   output_hidden_states=True)
+            image_forward_outs = self.vision_tower(
+                images.to(device=self.device, dtype=self.dtype), output_hidden_states=True
+            )
             image_features = self.feature_select(image_forward_outs).to(images.dtype)
         h = w = int(image_features.shape[1] ** 0.5)
         assert image_features.shape[1] == h * w
         image_features = image_features.reshape(image_features.shape[0], h, w, -1)
         image_features = self.pixel_shuffle(image_features * self.scale_pix_shuffle)
-        image_features = image_features.reshape(image_features.shape[0], -1, image_features.shape[-1])
+        image_features = image_features.reshape(
+            image_features.shape[0], -1, image_features.shape[-1]
+        )
 
         return image_features
 
@@ -94,5 +104,3 @@ class InternViTVisionTower(nn.Module):
     @property
     def num_patches(self):
         return (self.config.image_size // self.config.patch_size) ** 2
-
-

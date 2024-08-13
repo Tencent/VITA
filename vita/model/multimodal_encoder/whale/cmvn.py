@@ -12,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import torch
-
 import json
 import math
 
 import numpy as np
+import torch
+
 
 class GlobalCMVN(torch.nn.Module):
-    def __init__(self,
-                 mean: torch.Tensor,
-                 istd: torch.Tensor,
-                 norm_var: bool = True):
+    def __init__(self, mean: torch.Tensor, istd: torch.Tensor, norm_var: bool = True):
         """
         Args:
             mean (torch.Tensor): mean stats
@@ -49,8 +46,9 @@ class GlobalCMVN(torch.nn.Module):
             x = x * self.istd
         return x
 
+
 def _load_json_cmvn(json_cmvn_file):
-    """ Load the json format cmvn stats file and calculate cmvn
+    """Load the json format cmvn stats file and calculate cmvn
 
     Args:
         json_cmvn_file: cmvn stats file in json format
@@ -61,9 +59,9 @@ def _load_json_cmvn(json_cmvn_file):
     with open(json_cmvn_file) as f:
         cmvn_stats = json.load(f)
 
-    means = cmvn_stats['mean_stat']
-    variance = cmvn_stats['var_stat']
-    count = cmvn_stats['frame_num']
+    means = cmvn_stats["mean_stat"]
+    variance = cmvn_stats["var_stat"]
+    count = cmvn_stats["frame_num"]
     for i in range(len(means)):
         means[i] /= count
         variance[i] = variance[i] / count - means[i] * means[i]
@@ -75,7 +73,7 @@ def _load_json_cmvn(json_cmvn_file):
 
 
 def _load_kaldi_cmvn(kaldi_cmvn_file):
-    """ Load the kaldi format cmvn stats file and calculate cmvn
+    """Load the kaldi format cmvn stats file and calculate cmvn
 
     Args:
         kaldi_cmvn_file:  kaldi text style global cmvn file, which
@@ -87,18 +85,20 @@ def _load_kaldi_cmvn(kaldi_cmvn_file):
     """
     means = []
     variance = []
-    with open(kaldi_cmvn_file, 'r') as fid:
+    with open(kaldi_cmvn_file, "r") as fid:
         # kaldi binary file start with '\0B'
-        if fid.read(2) == '\0B':
-            logging.error('kaldi cmvn binary file is not supported, please '
-                          'recompute it by: compute-cmvn-stats --binary=false '
-                          ' scp:feats.scp global_cmvn')
+        if fid.read(2) == "\0B":
+            logging.error(
+                "kaldi cmvn binary file is not supported, please "
+                "recompute it by: compute-cmvn-stats --binary=false "
+                " scp:feats.scp global_cmvn"
+            )
             sys.exit(1)
         fid.seek(0)
         arr = fid.read().split()
-        assert (arr[0] == '[')
-        assert (arr[-2] == '0')
-        assert (arr[-1] == ']')
+        assert arr[0] == "["
+        assert arr[-2] == "0"
+        assert arr[-1] == "]"
         feat_dim = int((len(arr) - 2 - 2) / 2)
         for i in range(1, feat_dim + 1):
             means.append(float(arr[i]))

@@ -2,21 +2,26 @@ from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
-from transformers import AutoConfig, AutoModelForCausalLM
-
-from transformers import MixtralModel, MixtralConfig, MixtralForCausalLM
-
-from transformers.modeling_outputs import CausalLMOutputWithPast
-
-from ..vita_arch import VITAMetaModel, VITAMetaForCausalLM
 from PIL import Image
-from transformers.cache_utils import Cache, DynamicCache
-from transformers.modeling_outputs import MoeCausalLMOutputWithPast
 from torch.nn import CrossEntropyLoss
+from transformers import (
+    AutoConfig,
+    AutoModelForCausalLM,
+    MixtralConfig,
+    MixtralForCausalLM,
+    MixtralModel,
+)
+from transformers.cache_utils import Cache, DynamicCache
+from transformers.modeling_outputs import CausalLMOutputWithPast, MoeCausalLMOutputWithPast
+
+from ..vita_arch import VITAMetaForCausalLM, VITAMetaModel
 
 
 def load_balancing_loss_func(
-    gate_logits: torch.Tensor, num_experts: torch.Tensor = None, top_k=2, attention_mask: Optional[torch.Tensor] = None
+    gate_logits: torch.Tensor,
+    num_experts: torch.Tensor = None,
+    top_k=2,
+    attention_mask: Optional[torch.Tensor] = None,
 ) -> float:
     r"""
     Computes auxiliary load balancing loss as in Switch Transformer - implemented in Pytorch.
@@ -43,7 +48,9 @@ def load_balancing_loss_func(
 
     if isinstance(gate_logits, tuple):
         compute_device = gate_logits[0].device
-        concatenated_gate_logits = torch.cat([layer_gate.to(compute_device) for layer_gate in gate_logits], dim=0)
+        concatenated_gate_logits = torch.cat(
+            [layer_gate.to(compute_device) for layer_gate in gate_logits], dim=0
+        )
 
     routing_weights = torch.nn.functional.softmax(concatenated_gate_logits, dim=-1)
 
@@ -70,9 +77,9 @@ def load_balancing_loss_func(
         )
 
         # Compute the percentage of tokens routed to each experts
-        tokens_per_expert = torch.sum(expert_mask.float() * expert_attention_mask, dim=0) / torch.sum(
-            expert_attention_mask, dim=0
-        )
+        tokens_per_expert = torch.sum(
+            expert_mask.float() * expert_attention_mask, dim=0
+        ) / torch.sum(expert_attention_mask, dim=0)
 
         # Compute the mask that masks all padding tokens as 0 with the same shape of tokens_per_expert
         router_per_expert_attention_mask = (
@@ -83,12 +90,13 @@ def load_balancing_loss_func(
         )
 
         # Compute the average probability of routing to these experts
-        router_prob_per_expert = torch.sum(routing_weights * router_per_expert_attention_mask, dim=0) / torch.sum(
-            router_per_expert_attention_mask, dim=0
-        )
+        router_prob_per_expert = torch.sum(
+            routing_weights * router_per_expert_attention_mask, dim=0
+        ) / torch.sum(router_per_expert_attention_mask, dim=0)
 
     overall_loss = torch.sum(tokens_per_expert * router_prob_per_expert.unsqueeze(0))
     return overall_loss * num_experts
+
 
 def custom_forward(
     self,
@@ -130,13 +138,19 @@ def custom_forward(
     "Hey, are you conscious? Can you talk to me?\nI'm not conscious, but I can talk to you."
     ```"""
 
-    output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
+    output_attentions = (
+        output_attentions if output_attentions is not None else self.config.output_attentions
+    )
     output_router_logits = (
-        output_router_logits if output_router_logits is not None else self.config.output_router_logits
+        output_router_logits
+        if output_router_logits is not None
+        else self.config.output_router_logits
     )
 
     output_hidden_states = (
-        output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
+        output_hidden_states
+        if output_hidden_states is not None
+        else self.config.output_hidden_states
     )
     return_dict = return_dict if return_dict is not None else self.config.use_return_dict
 
@@ -156,7 +170,7 @@ def custom_forward(
 
     hidden_states = outputs[0]
     logits = self.lm_head(hidden_states)
-    #logits = logits.float()
+    # logits = logits.float()
 
     loss = None
     if labels is not None:
@@ -180,7 +194,9 @@ def custom_forward(
             attention_mask,
         )
         if labels is not None:
-            loss += self.router_aux_loss_coef * aux_loss.to(loss.device)  # make sure to reside in the same device
+            loss += self.router_aux_loss_coef * aux_loss.to(
+                loss.device
+            )  # make sure to reside in the same device
 
     if not return_dict:
         output = (logits,) + outputs[1:]
@@ -197,6 +213,7 @@ def custom_forward(
         attentions=outputs.attentions,
         router_logits=outputs.router_logits,
     )
+
 
 MixtralForCausalLM.forward = custom_forward
 
@@ -230,20 +247,20 @@ class VITAMixtralForCausalLM(MixtralForCausalLM, VITAMetaForCausalLM):
         return self.model
 
     def forward(
-            self,
-            input_ids: torch.LongTensor = None,
-            attention_mask: Optional[torch.Tensor] = None,
-            position_ids: Optional[torch.LongTensor] = None,
-            past_key_values: Optional[List[torch.FloatTensor]] = None,
-            inputs_embeds: Optional[torch.FloatTensor] = None,
-            labels: Optional[torch.LongTensor] = None,
-            use_cache: Optional[bool] = None,
-            output_attentions: Optional[bool] = None,
-            output_hidden_states: Optional[bool] = None,
-            images: Optional[torch.FloatTensor] = None,
-            audios: Optional[dict] = None,
-            output_router_logits: Optional[bool] = None,
-            return_dict: Optional[bool] = None,
+        self,
+        input_ids: torch.LongTensor = None,
+        attention_mask: Optional[torch.Tensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_values: Optional[List[torch.FloatTensor]] = None,
+        inputs_embeds: Optional[torch.FloatTensor] = None,
+        labels: Optional[torch.LongTensor] = None,
+        use_cache: Optional[bool] = None,
+        output_attentions: Optional[bool] = None,
+        output_hidden_states: Optional[bool] = None,
+        images: Optional[torch.FloatTensor] = None,
+        audios: Optional[dict] = None,
+        output_router_logits: Optional[bool] = None,
+        return_dict: Optional[bool] = None,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
         if inputs_embeds is None:
             (
@@ -252,15 +269,9 @@ class VITAMixtralForCausalLM(MixtralForCausalLM, VITAMetaForCausalLM):
                 attention_mask,
                 past_key_values,
                 inputs_embeds,
-                labels
-            ) = self.prepare_inputs_labels_for_multimodal(
-                input_ids,
-                position_ids,
-                attention_mask,
-                past_key_values,
                 labels,
-                images,
-                audios
+            ) = self.prepare_inputs_labels_for_multimodal(
+                input_ids, position_ids, attention_mask, past_key_values, labels, images, audios
             )
 
         return super().forward(
@@ -343,22 +354,31 @@ class VITAMixtralForCausalLM(MixtralForCausalLM, VITAMetaForCausalLM):
         )
         return model_inputs
 
-    def prepare_inputs_for_generation(self, input_ids, past_key_values=None, inputs_embeds=None, attention_mask=None,
-                                      output_router_logits=False,
-                                      **kwargs):
+    def prepare_inputs_for_generation(
+        self,
+        input_ids,
+        past_key_values=None,
+        inputs_embeds=None,
+        attention_mask=None,
+        output_router_logits=False,
+        **kwargs,
+    ):
         images = kwargs.pop("images", None)
         audios = kwargs.pop("audios", None)
 
         _inputs = self.prepare_inputs_for_generation_original(
-            input_ids, past_key_values=past_key_values, inputs_embeds=inputs_embeds, attention_mask=attention_mask,
+            input_ids,
+            past_key_values=past_key_values,
+            inputs_embeds=inputs_embeds,
+            attention_mask=attention_mask,
             output_router_logits=output_router_logits,
-            **kwargs
+            **kwargs,
         )
 
         if images is not None:
-            _inputs['images'] = images
+            _inputs["images"] = images
         if audios is not None:
-            _inputs['audios'] = audios
+            _inputs["audios"] = audios
         return _inputs
 
     def expand2square(self, pil_img, background_color):
@@ -373,7 +393,7 @@ class VITAMixtralForCausalLM(MixtralForCausalLM, VITAMetaForCausalLM):
             result = Image.new(pil_img.mode, (height, height), background_color)
             result.paste(pil_img, ((height - width) // 2, 0))
             return result
-        
+
     def process_images(self, images, model_cfg):
         vision_tower = self.get_vision_tower()
         if not vision_tower.is_loaded:
@@ -381,17 +401,19 @@ class VITAMixtralForCausalLM(MixtralForCausalLM, VITAMetaForCausalLM):
         image_processor = vision_tower.image_processor
         image_aspect_ratio = getattr(model_cfg, "image_aspect_ratio", None)
         new_images = []
-        if image_aspect_ratio == 'pad':
+        if image_aspect_ratio == "pad":
             for image in images:
-                image = self.expand2square(image, tuple(int(x * 255) for x in image_processor.image_mean))
-                image = image_processor.preprocess(image, return_tensors='pt')['pixel_values'][0]
+                image = self.expand2square(
+                    image, tuple(int(x * 255) for x in image_processor.image_mean)
+                )
+                image = image_processor.preprocess(image, return_tensors="pt")["pixel_values"][0]
                 new_images.append(image)
         else:
-            return image_processor(images, return_tensors='pt')['pixel_values']
+            return image_processor(images, return_tensors="pt")["pixel_values"]
         if all(x.shape == new_images[0].shape for x in new_images):
             new_images = torch.stack(new_images, dim=0)
         return new_images
 
+
 AutoConfig.register("vita-mixtral", VITAMixtralConfig)
 AutoModelForCausalLM.register(VITAMixtralConfig, VITAMixtralForCausalLM)
-

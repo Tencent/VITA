@@ -1,18 +1,18 @@
+import argparse
 import logging
-import six
 import sys
 import time
+from typing import Dict, Optional, Tuple
+
 import numpy as np
+import six
 import torch
-import argparse
 
-from typing import Tuple, Dict, Optional
-
-from vita.model.multimodal_encoder.whale.module.component.transformer import Transformer
-from vita.model.multimodal_encoder.whale.module.component.subsampling import Subsampling
 from vita.model.multimodal_encoder.whale.module.component.mamba import MambaSSM
-
+from vita.model.multimodal_encoder.whale.module.component.subsampling import Subsampling
+from vita.model.multimodal_encoder.whale.module.component.transformer import Transformer
 from vita.model.multimodal_encoder.whale.utils import make_pad_mask
+
 
 def add_encoder_args(group):
     """Add Encoder common arguments."""
@@ -26,13 +26,13 @@ def add_encoder_args(group):
         "--encoder-input-dim",
         type=int,
         default=256,
-        help="Input dim of encoder. Must equal to the input dim of the first Component (default=40)"
+        help="Input dim of encoder. Must equal to the input dim of the first Component (default=40)",
     )
     group.add_argument(
         "--encoder-output-dim",
         type=int,
         default=256,
-        help="Output dim of encoder. Must enqual to the output dim of the last Component ! (default=256)"
+        help="Output dim of encoder. Must enqual to the output dim of the last Component ! (default=256)",
     )
     # Add args of all kinds of components.
     # If you add a new component, DO NOT forget to add args to add_component_args func.
@@ -41,22 +41,19 @@ def add_encoder_args(group):
     group = MambaSSM.add_arguments(group)
     return group
 
+
 def assign_args_from_dict(args, dict, prefix_key=None):
     if prefix_key is not None:
         dict = dict[prefix_key]
     for k, v in dict.items():
-        k_args = k.replace('-', '_') 
+        k_args = k.replace("-", "_")
         if hasattr(args, k_args):
             setattr(args, k_args, dict[k])
     return args
 
+
 class whaleEncoder(torch.nn.Module):
-    def __init__(
-            self,
-            input_dim,
-            overview_conf = None,
-            para_conf = None,
-            global_cmvn = None):
+    def __init__(self, input_dim, overview_conf=None, para_conf=None, global_cmvn=None):
         super(whaleEncoder, self).__init__()
 
         parser = argparse.ArgumentParser()
@@ -66,7 +63,7 @@ class whaleEncoder(torch.nn.Module):
         assign_args_from_dict(args, overview_conf)
         # assign_args_from_dict(args, para_conf)
 
-        self.config = args.encoder_layer_config.split('-')
+        self.config = args.encoder_layer_config.split("-")
         encoder_input_dim = args.encoder_input_dim
         encoder_output_dim = args.encoder_output_dim
         prev_output_dim = encoder_input_dim
@@ -74,9 +71,9 @@ class whaleEncoder(torch.nn.Module):
         self.enc = torch.nn.ModuleList([])
         for name in self.config:
             assign_args_from_dict(args, para_conf[name])
-            if len(name.split('_'))  == 2:
-                name = name.split('_')[0]
-            elif len(name.split('_'))  == 1:
+            if len(name.split("_")) == 2:
+                name = name.split("_")[0]
+            elif len(name.split("_")) == 1:
                 name = name
             else:
                 logging.error("WRONG CONFIG! {} is not valid".format("encoder", name))
@@ -90,30 +87,36 @@ class whaleEncoder(torch.nn.Module):
                 self.enc.append(MambaSSM(args))
             else:
                 print("{} is not supported now!".format(name))
-                return NotImplemented                
+                return NotImplemented
             component_input_dim = getattr(args, name + "_input_dim")
             if component_input_dim != prev_output_dim:
                 # This is the first layer
-                logging.error("WRONG CONFIG! --{}-output-dim ({}) does not equal to --{}-input-dim ({})"
-                        .format(prev_component_name, prev_output_dim, name, component_input_dim))
+                logging.error(
+                    "WRONG CONFIG! --{}-output-dim ({}) does not equal to --{}-input-dim ({})".format(
+                        prev_component_name, prev_output_dim, name, component_input_dim
+                    )
+                )
                 sys.exit()
             prev_output_dim = getattr(args, name + "_output_dim")
             prev_component_name = name
-        
+
         self.global_cmvn = global_cmvn
-        if (prev_output_dim != encoder_output_dim):
-            logging.error("WRONG CONFIG! --{}-output-dim ({}) does not equal to --{}-output-dim ({}, the last component)"
-                        .format("encoder", encoder_output_dim, name, prev_output_dim))
+        if prev_output_dim != encoder_output_dim:
+            logging.error(
+                "WRONG CONFIG! --{}-output-dim ({}) does not equal to --{}-output-dim ({}, the last component)".format(
+                    "encoder", encoder_output_dim, name, prev_output_dim
+                )
+            )
             sys.exit()
-        
+
         self._output_size = encoder_output_dim
 
         num_params = sum(p.numel() for p in self.parameters())
-        print('the number of whale encoder params: {}M'.format(num_params/1024/1024))
+        print("the number of whale encoder params: {}M".format(num_params / 1024 / 1024))
 
     def output_size(self) -> int:
         return self._output_size
-    
+
     @torch.jit.unused
     def forward(self, xs, ilens, decoding_chunk_size=None, num_decoding_left_chunks=None):
         # type: (Tensor, Optional[Tensor], Optional[Tensor]) -> Tuple[Tensor, Optional[List[int]], Optional[Tensor]]
@@ -124,7 +127,7 @@ class whaleEncoder(torch.nn.Module):
         :return: batch of hidden state sequences (B, Tmax, eprojs)
         :rtype: torch.Tensor
         """
-        
+
         if decoding_chunk_size is not None and num_decoding_left_chunks is not None:
             for layer in self.enc:
                 if hasattr(layer, "chunk_size"):
@@ -134,7 +137,7 @@ class whaleEncoder(torch.nn.Module):
                 if hasattr(layer, "transformer_dynamic_chunks"):
                     layer.transformer_dynamic_chunks = False
 
-        assert(len(xs.shape)) == 3
+        assert (len(xs.shape)) == 3
         T = xs.size(1)
         masks = ~make_pad_mask(ilens, T).unsqueeze(1)  # (B, 1, T)
         if self.global_cmvn is not None:
@@ -148,17 +151,21 @@ class whaleEncoder(torch.nn.Module):
         if self.global_cmvn is not None:
             xs = self.global_cmvn(xs)
         for module in self.enc:
-            xs_pad, buffer, buffer_index, buffer_out = module.infer(xs_pad, buffer, buffer_index, buffer_out)
+            xs_pad, buffer, buffer_index, buffer_out = module.infer(
+                xs_pad, buffer, buffer_index, buffer_out
+            )
         return xs_pad, buffer, buffer_index, buffer_out
-    
+
     @torch.jit.export
     def infer_hidden(self, xs_pad, buffer, buffer_index, buffer_out, hidden_out):
         if self.global_cmvn is not None:
             xs = self.global_cmvn(xs)
         for module in self.enc:
-            xs_pad, buffer, buffer_index, buffer_out, hidden_out = module.infer_hidden(xs_pad, buffer, buffer_index, buffer_out, hidden_out)
+            xs_pad, buffer, buffer_index, buffer_out, hidden_out = module.infer_hidden(
+                xs_pad, buffer, buffer_index, buffer_out, hidden_out
+            )
         return xs_pad, buffer, buffer_index, buffer_out, hidden_out
-    
+
     @torch.jit.ignore(drop=True)
     def get_extra_loss(self) -> Dict[str, torch.Tensor]:
         return None

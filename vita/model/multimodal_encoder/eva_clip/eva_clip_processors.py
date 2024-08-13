@@ -1,12 +1,13 @@
-'''
+"""
 # Adapted from https://github.com/baaivision/EVA/tree/master/EVA-CLIP
-'''
+"""
+
+from PIL import Image
+from transformers.image_processing_utils import BatchFeature
+from transformers.image_transforms import convert_to_rgb
 
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
-from transformers.image_processing_utils import BatchFeature
-from PIL import Image
-from transformers.image_transforms import convert_to_rgb
 
 
 class BaseProcessor:
@@ -65,4 +66,4 @@ class EvaClipImageTrainProcessor(EvaClipImageBaseProcessor):
 
     @property
     def crop_size(self):
-        return {'height': self.image_size, 'width': self.image_size}
+        return {"height": self.image_size, "width": self.image_size}

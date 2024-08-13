@@ -1,13 +1,16 @@
-import numpy as np
 import math
 import pdb
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class DTCBlock(nn.Module):
-    def __init__(self, input_dim, output_dim, kernel_size, stride, causal_conv, dilation, dropout_rate):
+    def __init__(
+        self, input_dim, output_dim, kernel_size, stride, causal_conv, dilation, dropout_rate
+    ):
         super(DTCBlock, self).__init__()
         self.input_dim = input_dim
         self.output_dim = output_dim
@@ -23,7 +26,15 @@ class DTCBlock(nn.Module):
             self.padding = ((kernel_size - 1) // 2) * self.dilation
             self.lorder = 0
         self.causal_conv = causal_conv
-        self.depthwise_conv = nn.Conv1d(self.input_dim, self.input_dim, self.kernel_size, self.stride, self.padding, self.dilation, groups=self.input_dim)
+        self.depthwise_conv = nn.Conv1d(
+            self.input_dim,
+            self.input_dim,
+            self.kernel_size,
+            self.stride,
+            self.padding,
+            self.dilation,
+            groups=self.input_dim,
+        )
         self.point_conv_1 = nn.Conv1d(self.input_dim, self.input_dim, 1, 1, self.padding)
         self.point_conv_2 = nn.Conv1d(self.input_dim, self.input_dim, 1, 1, self.padding)
         self.bn_1 = nn.BatchNorm1d(self.input_dim)
@@ -57,15 +68,17 @@ class DTCBlock(nn.Module):
             x_relu_3 = torch.relu(x_bn_3)
         x_drop = self.dropout(x_relu_3)
         return x_drop
-    
+
     @torch.jit.export
     def infer(self, x, buffer, buffer_index, buffer_out):
         # type: (Tensor, Tensor, Tensor) -> Tuple[Tensor, Tensor, Tensor]
         x_in = x
         x = x_in.transpose(1, 2)
-        cnn_buffer = buffer[buffer_index: buffer_index + self.buffer_size].reshape([1, self.input_dim, self.lorder])
+        cnn_buffer = buffer[buffer_index : buffer_index + self.buffer_size].reshape(
+            [1, self.input_dim, self.lorder]
+        )
         x = torch.cat([cnn_buffer, x], dim=2)
-        buffer_out.append(x[:, :, -self.lorder:].reshape(-1))
+        buffer_out.append(x[:, :, -self.lorder :].reshape(-1))
         buffer_index = buffer_index + self.buffer_size
         x = self.depthwise_conv(x)
         x = self.bn_1(x)

@@ -31,11 +31,14 @@ class EvaClipVisionTower(nn.Module):
         if type(images) is list:
             image_features = []
             for image in images:
-                image_feature = self.vision_tower(image.to(device=self.device, dtype=self.dtype).unsqueeze(0)).to(
-                    image.dtype)
+                image_feature = self.vision_tower(
+                    image.to(device=self.device, dtype=self.dtype).unsqueeze(0)
+                ).to(image.dtype)
                 image_features.append(image_feature)
         else:
-            image_features = self.vision_tower(images.to(device=self.device, dtype=self.dtype)).to(images.dtype)
+            image_features = self.vision_tower(images.to(device=self.device, dtype=self.dtype)).to(
+                images.dtype
+            )
 
         return image_features
 
@@ -56,7 +59,7 @@ class EvaClipVisionTower(nn.Module):
         return (self.config.image_size // self.config.patch_size) ** 2
 
 
-class VisionTowerConfig():
+class VisionTowerConfig:
     def __init__(self):
         self.image_size = 336
         self.patch_size = 14

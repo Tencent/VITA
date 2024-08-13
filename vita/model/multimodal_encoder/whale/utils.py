@@ -1,13 +1,14 @@
-import os
-import yaml
-import json
-import torch
 import argparse
 import importlib
-
+import json
+import os
 from distutils.util import strtobool as dist_strtobool
 
+import torch
+import yaml
+
 IGNORE_ID = -1
+
 
 def assign_args_from_yaml(args, yaml_path, prefix_key=None):
     with open(yaml_path) as f:
@@ -15,22 +16,25 @@ def assign_args_from_yaml(args, yaml_path, prefix_key=None):
     if prefix_key is not None:
         ydict = ydict[prefix_key]
     for k, v in ydict.items():
-        k_args = k.replace('-', '_') 
+        k_args = k.replace("-", "_")
         if hasattr(args, k_args):
             setattr(args, k_args, ydict[k])
     return args
 
+
 def get_model_conf(model_path):
-    model_conf = os.path.dirname(model_path) + '/model.json'
+    model_conf = os.path.dirname(model_path) + "/model.json"
     with open(model_conf, "rb") as f:
-        print('reading a config file from ' + model_conf)
+        print("reading a config file from " + model_conf)
         confs = json.load(f)
     # for asr, tts, mt
     idim, odim, args = confs
     return argparse.Namespace(**args)
 
+
 def strtobool(x):
     return bool(dist_strtobool(x))
+
 
 def dynamic_import(import_path, alias=dict()):
     """dynamic import module and class
@@ -40,17 +44,19 @@ def dynamic_import(import_path, alias=dict()):
     :param dict alias: shortcut for registered class
     :return: imported class
     """
-    if import_path not in alias and ':' not in import_path:
+    if import_path not in alias and ":" not in import_path:
         raise ValueError(
-            'import_path should be one of {} or '
+            "import_path should be one of {} or "
             'include ":", e.g. "espnet.transform.add_deltas:AddDeltas" : '
-            '{}'.format(set(alias), import_path))
-    if ':' not in import_path:
+            "{}".format(set(alias), import_path)
+        )
+    if ":" not in import_path:
         import_path = alias[import_path]
 
-    module_name, objname = import_path.split(':')
+    module_name, objname = import_path.split(":")
     m = importlib.import_module(module_name)
     return getattr(m, objname)
+
 
 def set_deterministic_pytorch(args):
     # seed setting
@@ -59,13 +65,15 @@ def set_deterministic_pytorch(args):
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = False
 
+
 def pad_list(xs, pad_value):
     n_batch = len(xs)
     max_len = max(x.size(0) for x in xs)
-    pad = xs[0].new(n_batch, max_len, * xs[0].size()[1:]).fill_(pad_value)
+    pad = xs[0].new(n_batch, max_len, *xs[0].size()[1:]).fill_(pad_value)
     for i in range(n_batch):
-        pad[i, :xs[i].size(0)] = xs[i]
+        pad[i, : xs[i].size(0)] = xs[i]
     return pad
+
 
 def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
     """Make mask tensor containing indices of padded part.
@@ -86,20 +94,18 @@ def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
     """
     batch_size = lengths.size(0)
     max_len = max_len if max_len > 0 else lengths.max().item()
-    seq_range = torch.arange(0,
-                             max_len,
-                             dtype=torch.int64,
-                             device=lengths.device)
+    seq_range = torch.arange(0, max_len, dtype=torch.int64, device=lengths.device)
     seq_range_expand = seq_range.unsqueeze(0).expand(batch_size, max_len)
     seq_length_expand = lengths.unsqueeze(-1)
     mask = seq_range_expand >= seq_length_expand
     return mask
 
+
 def subsequent_chunk_mask(
-        size: int,
-        chunk_size: int,
-        num_left_chunks: int = -1,
-        device: torch.device = torch.device("cpu"),
+    size: int,
+    chunk_size: int,
+    num_left_chunks: int = -1,
+    device: torch.device = torch.device("cpu"),
 ) -> torch.Tensor:
     """Create mask for subsequent steps (size, size) with chunk size,
        this is for streaming encoder
@@ -132,12 +138,17 @@ def subsequent_chunk_mask(
         ret[i, start:ending] = True
     return ret
 
-def add_optional_chunk_mask(xs: torch.Tensor, masks: torch.Tensor,
-                            use_dynamic_chunk: bool,
-                            use_dynamic_left_chunk: bool,
-                            decoding_chunk_size: int, static_chunk_size: int,
-                            num_decoding_left_chunks: int):
-    """ Apply optional mask for encoder.
+
+def add_optional_chunk_mask(
+    xs: torch.Tensor,
+    masks: torch.Tensor,
+    use_dynamic_chunk: bool,
+    use_dynamic_left_chunk: bool,
+    decoding_chunk_size: int,
+    static_chunk_size: int,
+    num_decoding_left_chunks: int,
+):
+    """Apply optional mask for encoder.
 
     Args:
         xs (torch.Tensor): padded input, (B, L, D), L for max length
@@ -173,7 +184,7 @@ def add_optional_chunk_mask(xs: torch.Tensor, masks: torch.Tensor,
             # chunk size is either [1, 25] or full context(max_len).
             # Since we use 4 times subsampling and allow up to 1s(100 frames)
             # delay, the maximum frame is 100 / 4 = 25.
-            chunk_size = torch.randint(1, max_len, (1, )).item()
+            chunk_size = torch.randint(1, max_len, (1,)).item()
             num_left_chunks = -1
             if chunk_size > max_len // 2:
                 chunk_size = max_len
@@ -181,18 +192,17 @@ def add_optional_chunk_mask(xs: torch.Tensor, masks: torch.Tensor,
                 chunk_size = chunk_size % 25 + 1
                 if use_dynamic_left_chunk:
                     max_left_chunks = (max_len - 1) // chunk_size
-                    num_left_chunks = torch.randint(0, max_left_chunks,
-                                                    (1, )).item()
-        chunk_masks = subsequent_chunk_mask(xs.size(1), chunk_size,
-                                            num_left_chunks,
-                                            xs.device)  # (L, L)
+                    num_left_chunks = torch.randint(0, max_left_chunks, (1,)).item()
+        chunk_masks = subsequent_chunk_mask(
+            xs.size(1), chunk_size, num_left_chunks, xs.device
+        )  # (L, L)
         chunk_masks = chunk_masks.unsqueeze(0)  # (1, L, L)
         chunk_masks = masks & chunk_masks  # (B, L, L)
     elif static_chunk_size > 0:
         num_left_chunks = num_decoding_left_chunks
-        chunk_masks = subsequent_chunk_mask(xs.size(1), static_chunk_size,
-                                            num_left_chunks,
-                                            xs.device)  # (L, L)
+        chunk_masks = subsequent_chunk_mask(
+            xs.size(1), static_chunk_size, num_left_chunks, xs.device
+        )  # (L, L)
         chunk_masks = chunk_masks.unsqueeze(0)  # (1, L, L)
         chunk_masks = masks & chunk_masks  # (B, L, L)
     else:

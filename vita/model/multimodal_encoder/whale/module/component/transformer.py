@@ -1,16 +1,25 @@
 """Encoder self-attention layer definition."""
 
-import numpy as np
 import math
 import pdb
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from vita.model.multimodal_encoder.whale.module.layer.attention import PositionalEncoding, RelPositionalEncoding, PositionwiseFeedForward, MultiLayeredConv1d, Conv1dLinear, MultiHeadedAttention
+from vita.model.multimodal_encoder.whale.module.layer.attention import (
+    Conv1dLinear,
+    MultiHeadedAttention,
+    MultiLayeredConv1d,
+    PositionalEncoding,
+    PositionwiseFeedForward,
+    RelPositionalEncoding,
+)
+
 # from vita.model.multimodal_encoder.whale.module.component.utils import *
-from vita.model.multimodal_encoder.whale.utils import strtobool, IGNORE_ID, add_optional_chunk_mask
+from vita.model.multimodal_encoder.whale.utils import IGNORE_ID, add_optional_chunk_mask, strtobool
+
 
 def repeat(N, fn):
     """Repeat module N times.
@@ -22,8 +31,10 @@ def repeat(N, fn):
     """
     return MultiSequential(*[fn(n) for n in range(N)])
 
+
 class MultiSequential(torch.nn.Sequential):
     """Multi-input multi-output torch.nn.Sequential."""
+
     def forward(self, x, masks, pos_emb):
 
         """Repeat."""
@@ -36,7 +47,9 @@ class MultiSequential(torch.nn.Sequential):
         # type: (Tensor, Tensor, Tensor, Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]
         """Repeat."""
         for m in self:
-            x, pos_emb, buffer, buffer_index, buffer_out = m.infer(x, pos_emb, buffer, buffer_index, buffer_out)
+            x, pos_emb, buffer, buffer_index, buffer_out = m.infer(
+                x, pos_emb, buffer, buffer_index, buffer_out
+            )
         return x, pos_emb, buffer, buffer_index, buffer_out
 
     @torch.jit.export
@@ -44,9 +57,12 @@ class MultiSequential(torch.nn.Sequential):
         # type: (Tensor, Tensor, Tensor, Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]
         """Repeat."""
         for m in self:
-            x, pos_emb, buffer, buffer_index, buffer_out = m.infer(x, pos_emb, buffer, buffer_index, buffer_out)
+            x, pos_emb, buffer, buffer_index, buffer_out = m.infer(
+                x, pos_emb, buffer, buffer_index, buffer_out
+            )
             hidden_out.append(x)
         return x, pos_emb, buffer, buffer_index, buffer_out, hidden_out
+
 
 class TransformerLayer(nn.Module):
     """Transformer layer module.
@@ -61,8 +77,10 @@ class TransformerLayer(nn.Module):
         if False, no additional linear will be applied. i.e. x -> x + att(x)
 
     """
-    def __init__(self, size, self_attn, feed_forward, dropout_rate,
-                 normalize_before=True, concat_after=False):
+
+    def __init__(
+        self, size, self_attn, feed_forward, dropout_rate, normalize_before=True, concat_after=False
+    ):
         """Construct an TransformerLayer object."""
         super(TransformerLayer, self).__init__()
         self.self_attn = self_attn
@@ -113,11 +131,15 @@ class TransformerLayer(nn.Module):
         if self.normalize_before:
             x = self.norm1(x)
         if self.concat_after:
-            x_att, buffer, buffer_index, buffer_out = self.self_attn.infer(x, x, x, pos_emb, buffer, buffer_index, buffer_out)
+            x_att, buffer, buffer_index, buffer_out = self.self_attn.infer(
+                x, x, x, pos_emb, buffer, buffer_index, buffer_out
+            )
             x_concat = torch.cat((x, x_att), dim=-1)
             x = residual + self.concat_linear(x_concat)
         else:
-            x_att, buffer, buffer_index, buffer_out = self.self_attn.infer(x, x, x, pos_emb, buffer, buffer_index, buffer_out)
+            x_att, buffer, buffer_index, buffer_out = self.self_attn.infer(
+                x, x, x, pos_emb, buffer, buffer_index, buffer_out
+            )
             x = residual + x_att
         if not self.normalize_before:
             x = self.norm1(x)
@@ -125,44 +147,119 @@ class TransformerLayer(nn.Module):
         residual = x.clone()
         if self.normalize_before:
             x = self.norm2(x)
-        x_feed, buffer, buffer_index, buffer_out = self.feed_forward.infer(x, buffer, buffer_index, buffer_out)
+        x_feed, buffer, buffer_index, buffer_out = self.feed_forward.infer(
+            x, buffer, buffer_index, buffer_out
+        )
         x = residual + x_feed
         if not self.normalize_before:
             x = self.norm2(x)
 
         return x, pos_emb, buffer, buffer_index, buffer_out
 
+
 class Transformer(torch.nn.Module):
     @staticmethod
     def add_arguments(group):
         """Add TDNN common arguments."""
-        group.add_argument('--transformer-input-dim', default=256, type=int, help="Input dim of Transformer.")
-        group.add_argument('--transformer-output-dim', default=4, type=int, help="Output dim of Transformer.")
-        group.add_argument('--transformer-attention-dim', default=256, type=int, help="Dimention of attention.")
-        group.add_argument('--transformer-attention-heads', default=4, type=int, help="The number of heads of multi head attention.")
-        group.add_argument('--transformer-linear-units', default=1024, type=int, help="The number of units of position-wise feed forward.")
-        group.add_argument('--transformer-num-blocks', default=6, type=int, help="The number of attention blocks.")
-        group.add_argument('--transformer-dropout-rate', default=0.1, type=float, help="Dropout rate in Transformer.")
-        group.add_argument('--transformer-attention-dropout-rate', default=0.0, type=float, help="Dropout rate in attention.")
-        group.add_argument('--transformer-positional-dropout-rate', default=0.1, type=float, help="Dropout rate after adding positional encoding.")
-        group.add_argument('--transformer-input-layer', default='linear', type=str, help="Type of input layer")
-        group.add_argument('--transformer-pos-enc-class', default='abs-enc', type=str, help="")
-        group.add_argument('--transformer-normalize-before', default=True, type=strtobool, help="Whether to use layer-norm before the first block.")
-        group.add_argument('--transformer-concat-after', default=False, type=strtobool, help="Whether to concat attention layer's input and output.")
-        group.add_argument('--transformer-positionwise-layer-type', default='linear', type=str, help="Linear of conv1d.")
-        group.add_argument('--transformer-positionwise-conv-kernel_size', default=1, type=int, help="Kernel size of positionwise conv1d layer.")        
-        group.add_argument('--transformer-chunk_size', default=-1, type=int, help="")
-        group.add_argument('--transformer-left_chunks', default=-1, type=int, help="")
-        group.add_argument('--transformer-dynamic-chunks', default=True, type=strtobool, help="")
+        group.add_argument(
+            "--transformer-input-dim", default=256, type=int, help="Input dim of Transformer."
+        )
+        group.add_argument(
+            "--transformer-output-dim", default=4, type=int, help="Output dim of Transformer."
+        )
+        group.add_argument(
+            "--transformer-attention-dim", default=256, type=int, help="Dimention of attention."
+        )
+        group.add_argument(
+            "--transformer-attention-heads",
+            default=4,
+            type=int,
+            help="The number of heads of multi head attention.",
+        )
+        group.add_argument(
+            "--transformer-linear-units",
+            default=1024,
+            type=int,
+            help="The number of units of position-wise feed forward.",
+        )
+        group.add_argument(
+            "--transformer-num-blocks", default=6, type=int, help="The number of attention blocks."
+        )
+        group.add_argument(
+            "--transformer-dropout-rate",
+            default=0.1,
+            type=float,
+            help="Dropout rate in Transformer.",
+        )
+        group.add_argument(
+            "--transformer-attention-dropout-rate",
+            default=0.0,
+            type=float,
+            help="Dropout rate in attention.",
+        )
+        group.add_argument(
+            "--transformer-positional-dropout-rate",
+            default=0.1,
+            type=float,
+            help="Dropout rate after adding positional encoding.",
+        )
+        group.add_argument(
+            "--transformer-input-layer", default="linear", type=str, help="Type of input layer"
+        )
+        group.add_argument("--transformer-pos-enc-class", default="abs-enc", type=str, help="")
+        group.add_argument(
+            "--transformer-normalize-before",
+            default=True,
+            type=strtobool,
+            help="Whether to use layer-norm before the first block.",
+        )
+        group.add_argument(
+            "--transformer-concat-after",
+            default=False,
+            type=strtobool,
+            help="Whether to concat attention layer's input and output.",
+        )
+        group.add_argument(
+            "--transformer-positionwise-layer-type",
+            default="linear",
+            type=str,
+            help="Linear of conv1d.",
+        )
+        group.add_argument(
+            "--transformer-positionwise-conv-kernel_size",
+            default=1,
+            type=int,
+            help="Kernel size of positionwise conv1d layer.",
+        )
+        group.add_argument("--transformer-chunk_size", default=-1, type=int, help="")
+        group.add_argument("--transformer-left_chunks", default=-1, type=int, help="")
+        group.add_argument("--transformer-dynamic-chunks", default=True, type=strtobool, help="")
         return group
 
-    def __init__(self, args, input_dim=None, output_dim=None, attention_dim=None, attention_heads=None, linear_units=None, 
-                 num_blocks=None, dropout_rate=None, positional_dropout_rate=None, attention_dropout_rate=None, input_layer=None, 
-                 pos_enc_class=None, normalize_before=None, concat_after=None, positionwise_layer_type=None, positionwise_conv_kernel_size=None, 
-                 chunk_size=None, left_chunks=None):
+    def __init__(
+        self,
+        args,
+        input_dim=None,
+        output_dim=None,
+        attention_dim=None,
+        attention_heads=None,
+        linear_units=None,
+        num_blocks=None,
+        dropout_rate=None,
+        positional_dropout_rate=None,
+        attention_dropout_rate=None,
+        input_layer=None,
+        pos_enc_class=None,
+        normalize_before=None,
+        concat_after=None,
+        positionwise_layer_type=None,
+        positionwise_conv_kernel_size=None,
+        chunk_size=None,
+        left_chunks=None,
+    ):
         """Construct an Encoder object."""
         super(Transformer, self).__init__()
-        if args is None:       
+        if args is None:
             self.input_dim = input_dim
             self.output_dim = output_dim
             self.attention_dim = attention_dim
@@ -204,7 +301,12 @@ class Transformer(torch.nn.Module):
             pos_enc_args = (self.attention_dim, self.positional_dropout_rate)
             pos_enc_class = PositionalEncoding
         elif self.pos_enc_class == "rel-enc":
-            pos_enc_args = (self.attention_dim, self.positional_dropout_rate, self.chunk_size, self.left_chunks)
+            pos_enc_args = (
+                self.attention_dim,
+                self.positional_dropout_rate,
+                self.chunk_size,
+                self.left_chunks,
+            )
             pos_enc_class = RelPositionalEncoding
 
         if self.input_layer == "linear":
@@ -212,16 +314,14 @@ class Transformer(torch.nn.Module):
                 torch.nn.Linear(self.input_dim, self.attention_dim),
                 torch.nn.LayerNorm(self.attention_dim),
                 torch.nn.Dropout(self.dropout_rate),
-                torch.nn.ReLU()
+                torch.nn.ReLU(),
             )
         elif self.input_layer == "embed":
             self.embed = torch.nn.Sequential(
                 torch.nn.Embedding(self.input_dim, self.attention_dim, padding_idx=IGNORE_ID)
             )
         elif self.input_layer == "none":
-            self.embed = torch.nn.Sequential(
-                torch.nn.Identity()
-            )
+            self.embed = torch.nn.Sequential(torch.nn.Identity())
         else:
             raise ValueError("unknown input_layer: " + self.input_layer)
         self.pe = pos_enc_class(*pos_enc_args)
@@ -232,10 +332,20 @@ class Transformer(torch.nn.Module):
             positionwise_layer_args = (self.attention_dim, self.linear_units, self.dropout_rate)
         elif self.positionwise_layer_type == "conv1d":
             positionwise_layer = MultiLayeredConv1d
-            positionwise_layer_args = (self.attention_dim, self.linear_units, self.positionwise_conv_kernel_size, self.dropout_rate)
+            positionwise_layer_args = (
+                self.attention_dim,
+                self.linear_units,
+                self.positionwise_conv_kernel_size,
+                self.dropout_rate,
+            )
         elif self.positionwise_layer_type == "conv1d-linear":
             positionwise_layer = Conv1dLinear
-            positionwise_layer_args = (self.attention_dim, self.linear_units, self.positionwise_conv_kernel_size, self.dropout_rate)
+            positionwise_layer_args = (
+                self.attention_dim,
+                self.linear_units,
+                self.positionwise_conv_kernel_size,
+                self.dropout_rate,
+            )
         else:
             raise NotImplementedError("Support only linear or conv1d.")
 
@@ -243,12 +353,19 @@ class Transformer(torch.nn.Module):
             self.num_blocks,
             lambda lnum: TransformerLayer(
                 self.attention_dim,
-                MultiHeadedAttention(self.attention_heads, self.attention_dim, self.attention_dropout_rate, self.chunk_size, self.left_chunks, self.pos_enc_class),
+                MultiHeadedAttention(
+                    self.attention_heads,
+                    self.attention_dim,
+                    self.attention_dropout_rate,
+                    self.chunk_size,
+                    self.left_chunks,
+                    self.pos_enc_class,
+                ),
                 positionwise_layer(*positionwise_layer_args),
                 self.dropout_rate,
                 self.normalize_before,
-                self.concat_after
-            )
+                self.concat_after,
+            ),
         )
         if self.normalize_before:
             self.after_norm = torch.nn.LayerNorm(self.attention_dim)
@@ -262,28 +379,20 @@ class Transformer(torch.nn.Module):
         :return: position embedded tensor and mask
         :rtype Tuple[torch.Tensor, torch.Tensor]:
         """
-        
-        if self.transformer_dynamic_chunks == True: # and self.training:
-            chunk_masks = add_optional_chunk_mask(xs, masks,
-                                            True,
-                                            True,
-                                            0,
-                                            0,
-                                            -1)
+
+        if self.transformer_dynamic_chunks == True:  # and self.training:
+            chunk_masks = add_optional_chunk_mask(xs, masks, True, True, 0, 0, -1)
         else:
-            chunk_masks = add_optional_chunk_mask(xs, masks,
-                                            False,
-                                            False,
-                                            self.chunk_size,
-                                            self.chunk_size,
-                                            self.left_chunks).to(xs.device)
+            chunk_masks = add_optional_chunk_mask(
+                xs, masks, False, False, self.chunk_size, self.chunk_size, self.left_chunks
+            ).to(xs.device)
         xs = self.embed(xs)
         xs, pos_emb = self.pe(xs)
         xs, chunk_masks, pos_emb = self.encoders(xs, chunk_masks, pos_emb)
         if self.normalize_before:
             xs = self.after_norm(xs)
         return xs, ilens, masks
-    
+
     @torch.jit.export
     def infer(self, xs, buffer, buffer_index, buffer_out):
         xs = self.embed(xs)
@@ -293,12 +402,14 @@ class Transformer(torch.nn.Module):
         # buffer_out.append(pe_index.reshape(-1).to(torch.float32))
         # buffer_index = buffer_index + 1
         xs, pos_emb, _ = self.pe.infer(xs, 0)
-        xs, pos_emb, buffer, buffer_index, buffer_out = self.encoders.infer(xs, pos_emb, buffer, buffer_index, buffer_out)
+        xs, pos_emb, buffer, buffer_index, buffer_out = self.encoders.infer(
+            xs, pos_emb, buffer, buffer_index, buffer_out
+        )
 
         if self.normalize_before:
             xs = self.after_norm(xs)
         return xs, buffer, buffer_index, buffer_out
-    
+
     @torch.jit.export
     def infer_hidden(self, xs, buffer, buffer_index, buffer_out, hidden_out):
         xs = self.embed(xs)
@@ -308,7 +419,9 @@ class Transformer(torch.nn.Module):
         # buffer_out.append(pe_index.reshape(-1).to(torch.float32))
         # buffer_index = buffer_index + 1
         xs, pos_emb, _ = self.pe.infer(xs, 0)
-        xs, pos_emb, buffer, buffer_index, buffer_out, hidden_out = self.encoders.infer_hidden(xs, pos_emb, buffer, buffer_index, buffer_out, hidden_out)
+        xs, pos_emb, buffer, buffer_index, buffer_out, hidden_out = self.encoders.infer_hidden(
+            xs, pos_emb, buffer, buffer_index, buffer_out, hidden_out
+        )
 
         if self.normalize_before:
             xs = self.after_norm(xs)
