@@ -1,4 +1,3 @@
-
 import base64
 import datetime
 import io
@@ -21,8 +20,7 @@ import shortuuid
 import cv2
 from vllm.utils import random_uuid
 import gradio as gr
-from gw_tts_tmp import WebSocket, pcm2wav
-import websocket
+
 from collections import deque
 from queue import Empty
 
@@ -426,22 +424,6 @@ def load_model(
             print(f"Process {cuda_devices} has generated results: {''.join(results)}")
 
 
-
-def transform_text(text):
-    # Transform input text into speech wav file, and save it to a local path.
-    WS = WebSocket()
-    websocket.enableTrace(False)
-    WS.tts['text'] = "<speak>" + text + "</speak>"
-    wsUrl = WS.create_url()
-    ws = websocket.WebSocketApp(
-        wsUrl, on_open=WS.on_open, on_message=WS.on_message, on_error=WS.on_error, on_close=WS.on_close)
-    ws.run_forever()
-
-    tmp_saved_wav_file = "tmp_audio/" + str(WS.tts["voice_type"]) + "_" + str(shortuuid.uuid()) + ".wav"
-    os.makedirs(os.path.basename(tmp_saved_wav_file), exist_ok=True)
-
-    pcm2wav(WS.audio, tmp_saved_wav_file)
-    return tmp_saved_wav_file
 
 
 
