@@ -17,7 +17,8 @@ import asyncio
 import time
 from vllm import AsyncLLMEngine, AsyncEngineArgs, SamplingParams
 import shortuuid
-import cv2
+import imageio
+from moviepy.editor import ImageSequenceClip
 from vllm.utils import random_uuid
 import gradio as gr
 
@@ -765,21 +766,17 @@ def launch_demo(
     last_output_id = 0
 
     def save_video(images, video_filename):
-
-        copy_images = list(images)
-
-        if len(copy_images) == 0:
+        if len(images) == 0:
             return
-
-        height, width, layers = copy_images[0].shape
-        size = (width, height)
-
-        out = cv2.VideoWriter(video_filename, cv2.VideoWriter_fourcc(*'mp4v'), 20, size)
-
-        for image in copy_images:
-            out.write(cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-
-        out.release()
+    
+        # Convert images to a list of numpy arrays
+        frames = [imageio.imread(image) for image in images]
+    
+        # Create a video clip from the frames
+        clip = ImageSequenceClip(frames, fps=20)
+    
+        # Write the video file
+        clip.write_videofile(video_filename, codec='libx264')
 
 
     def process_image(image):
