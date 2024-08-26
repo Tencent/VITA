@@ -1,4 +1,3 @@
-
 import torch
 import os
 from bunny.constants import DEFAULT_AUDIO_TOKEN, DEFAULT_IMAGE_TOKEN, MAX_IMAGE_LENGTH, IMAGE_TOKEN_INDEX, MIN_IMAGE_LENGTH
@@ -89,25 +88,24 @@ def escape_markdown(text):
 
     return text
 
-# import ffmpeg
-import cv2
+
+
+import ffmpeg
+
 def convert_webm_to_mp4(input_file, output_file):
     try:
-        cap = cv2.VideoCapture(input_file)
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(output_file, fourcc, 20.0, (int(cap.get(3)), int(cap.get(4))))
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-            out.write(frame)
-
-        cap.release()
-        out.release()
-    except Exception as e:
-        print(f"Error: {e}")
+        (
+            ffmpeg
+            .input(input_file)
+            .output(output_file, vcodec='libx264', acodec='aac')
+            .run()
+        )
+        print(f"Conversion successful: {output_file}")
+    except ffmpeg.Error as e:
+        print(f"Error: {e.stderr.decode()}")
         raise
+
+
 
 def is_image(file_path):
     image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
