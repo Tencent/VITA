@@ -1,0 +1,7 @@
+outputs
+*.pyc
+*/__pycache__/*
+*.egg*
+checkpoints-*
+.DS_Store
+custom
