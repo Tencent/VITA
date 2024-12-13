@@ -1,0 +1,110 @@
+{
+  "architectures": [
+    "Qwen2ForConditionalGeneration"
+  ],
+  "image_token_index": 51000,
+  "audio_token_index": 51001,
+  "auto_map": {
+    "AutoConfig": "configuration_qwen2_multimodal.Qwen2MultiModalConfig"
+  },
+  "text_config":
+  {
+    "architectures": [
+      "Qwen2ForCausalLM"
+    ],
+    "attention_dropout": 0.0,
+    "bos_token_id": 151643,
+    "eos_token_id": 151645,
+    "hidden_act": "silu",
+    "hidden_size": 3584,
+    "initializer_range": 0.02,
+    "intermediate_size": 18944,
+    "max_position_embeddings": 32768,
+    "max_window_layers": 28,
+    "model_type": "qwen2",
+    "num_attention_heads": 28,
+    "num_hidden_layers": 28,
+    "num_key_value_heads": 4,
+    "rms_norm_eps": 1e-06,
+    "rope_theta": 1000000.0,
+    "sliding_window": 131072,
+    "tie_word_embeddings": false,
+    "torch_dtype": "bfloat16",
+    "transformers_version": "4.43.1",
+    "use_cache": true,
+    "use_sliding_window": false,
+    "vocab_size": 152064
+  },
+  "vision_config": {
+    "architectures": [
+      "InternVisionModel"
+    ],
+    "auto_map": {
+      "AutoConfig": "configuration_intern_vit.InternVisionConfig"
+    },
+    "attention_dropout": 0.0,
+    "drop_path_rate": 0.1,
+    "dropout": 0.0,
+    "hidden_act": "gelu",
+    "hidden_size": 1024,
+    "image_size": 448,
+    "initializer_factor": 1.0,
+    "initializer_range": 0.02,
+    "intermediate_size": 4096,
+    "layer_norm_eps": 1e-06,
+    "model_type": "intern_vit_6b",
+    "norm_type": "layer_norm",
+    "num_attention_heads": 16,
+    "num_channels": 3,
+    "num_hidden_layers": 24,
+    "patch_size": 14,
+    "qk_normalization": false,
+    "qkv_bias": true,
+    "torch_dtype": "bfloat16",
+    "transformers_version": "4.37.2",
+    "use_flash_attn": true
+  },
+  "audio_config":{
+    "_name_or_path": "whale_audio_mini",
+    "architectures": [
+      "WhaleAudioModel"
+    ],
+    "attention_dropout": 0.0,
+    "auto_map": {
+      "AutoConfig": "configuration_whale.WhaleConfig",
+      "AutoFeatureExtractor": "processor_whale.WhaleFeatureExtractor"
+    },
+    "concat_after": false,
+    "dropout": 0.1,
+    "hidden_act": "relu",
+    "hidden_size": 1024,
+    "initializer_factor": 0.1,
+    "initializer_range": 0.02,
+    "input_dim": 80,
+    "intermediate_size": 4096,
+    "layer_norm_eps": 1e-05,
+    "max_position_embeddings": 5000,
+    "model_type": "whale",
+    "norm_type": "layer_norm",
+    "normalize_before": true,
+    "num_attention_heads": 16,
+    "num_channels": 1,
+    "num_hidden_layers": 24,
+    "positional_dropout": 0.1,
+    "qk_normalization": false,
+    "qkv_bias": false,
+    "torch_dtype": "float32",
+    "transformers_version": "4.42.4",
+    "use_flash_attn": false,
+    "use_relative_pe": true
+  },
+  "downsample_ratio": 0.5,
+  "dynamic_image_size": true,
+  "max_dynamic_patch": 12,
+  "min_dynamic_patch": 1,
+  "vision_feature_layer": -1,
+  "use_thumbnail": true,
+  "tokenizer_model_max_length": 4600,
+  "tokenizer_padding_side": "right",
+  "vocab_size": 152064
+}
