@@ -1,6 +1,9 @@
+The copyright notice pertaining to the Tencent code in this repo was previously in the name of “THL A29 Limited.”  That entity has now been de-registered.  You should treat all previously distributed copies of the code as if the copyright notice was in the name of “Tencent.”
+
+
 Tencent is pleased to support the open source community by making VITA available. 
 
-Copyright (C) 2024 THL A29 Limited, a Tencent company.  All rights reserved. 
+Copyright (C) 2024 Tencent.  All rights reserved. 
 
 VITA is licensed under the Apache License Version 2.0 except for the third-party components listed below.
 
@@ -137,7 +140,7 @@ Copyright (c) gradio original author and authors
 Source code of this software can be obtained from: https://github.com/gradio-app/gradio
 
 5. tencentcloud
- Copyright (c) 2017-2021 THL A29 Limited, a Tencent company. All Rights Reserved.
+ Copyright (c) 2017-2021 Tencent. All Rights Reserved.
 Source code of this software can be obtained from: https://github.com/TencentCloud/tencentcloud-sdk-python
 
 
