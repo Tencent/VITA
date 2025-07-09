@@ -1,4 +1,7 @@
-Copyright (C) 2024 THL A29 Limited, a Tencent company.  All rights reserved. The below software and/or models in this distribution may have been modified by THL A29 Limited ("Tencent Modifications"). All Tencent Modifications are Copyright (C) THL A29 Limited.
+The copyright notice pertaining to the Tencent code in this repo was previously in the name of “THL A29 Limited.”  That entity has now been de-registered.  You should treat all previously distributed copies of the code as if the copyright notice was in the name of “Tencent.”
+
+
+Copyright (C) 2024 Tencent.  All rights reserved. The below software and/or models in this distribution may have been modified by Tencent. All Tencent Modifications are Copyright (C) Tencent.
 
 License Terms of the  VITA1.5:
 --------------------------------------------------------------------
@@ -18,9 +21,9 @@ Other dependencies and licenses:
 
 
 Open Source Model Licensed under the Apache License Version 2.0:
-The below software in this distribution may have been modified by THL A29 Limited ("Tencent Modifications"), as model weights provided for the VITA1.5 Project hereunder is fine-tuned with the assistance of below model.
+The below software in this distribution may have been modified by Tencent, as model weights provided for the VITA1.5 Project hereunder is fine-tuned with the assistance of below model.
 
-All Tencent Modifications are Copyright (C) 2024 THL A29 Limited.
+All Tencent Modifications are Copyright (C) 2024 Tencent.
 --------------------------------------------------------------------
 1. Qwen2-7B-Instruct
 Copyright 2024 Alibaba Cloud
@@ -86,7 +89,7 @@ END OF TERMS AND CONDITIONS
 
 
 Open Source Model/Software Licensed under the Apache License Version 2.0:
-The below software in this distribution may have been modified by THL A29 Limited ("Tencent Modifications").  All Tencent Modifications are Copyright (C) 2024 THL A29 Limited.
+The below software in this distribution may have been modified by Tencent.  All Tencent Modifications are Copyright (C) 2024 Tencent.
 --------------------------------------------------------------------
 1. ModelLink
 Copyright (c) 2024, HUAWEI CORPORATION.  All rights reserved.
