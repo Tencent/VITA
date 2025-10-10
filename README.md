@@ -18,7 +18,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 
 ### ✨ Highlights
 
-- **Two-Stage Training Strategy**: Align VLM hidden states with pretrained action models, then fine-tune key components for precise action generation.
+- **Efficient Training**: Lightly align VLM hidden states with pretrained action models, then fine-tune for accurate action generation.
 - **Simple Architecture**: Adds only minimal layers — state encoder and query token.
 - **Strong Performance**: Outperforms most VLAs on CALVIN ABC-D and LIBERO.
   <br clear="left"/>
