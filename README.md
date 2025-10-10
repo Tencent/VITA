@@ -12,13 +12,13 @@
   |
 </p>
 
-We are thrilled to announce the launch of VITA-VLA — a powerful and streamlined vision-language-action (VLA) model that combines architectural simplicity with highly efficient training. Designed to unlock the full potential of pretrained vision-language models in embodied AI tasks. VITA-VLA introduces a novel two-stage alignment and fine-tuning strategy, enabling superior performance with minimal computational overhead. Whether in simulation or real-world robotic scenarios, VITA-VLA delivers state-of-the-art results while remaining lightweight, modular, and reproducible.
+We are thrilled to announce the launch of VITA-VLA — a powerful and streamlined vision-language-action (VLA) model that combines architectural simplicity with highly efficient training. Designed to unlock the full potential of pretrained vision-language models in embodied AI tasks. VITA-VLA introduces a novel two-stage training strategy, enabling superior performance with minimal computational overhead. Whether in simulation or real-world robotic scenarios, VITA-VLA delivers state-of-the-art results.
 
 <img src="./assets/logo_yt.png" alt="VITA-VLA Logo" width="120" align="left" style="margin-right:20px; margin-bottom:10px; border-radius:8px;">
 
 ### ✨ Highlights
 
-- **Two-Stage Training Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
+- **Two-Stage Training Strategy**: Align VLM hidden states with pretrained action models, then fine-tune key components for precise action generation.
 - **Simple Architecture**: Adds only minimal layers — state encoder and query token.
 - **Strong Performance**: Outperforms most VLAs on CALVIN ABC-D and LIBERO.
 <br clear="left"/> 
