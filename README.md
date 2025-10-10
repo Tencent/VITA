@@ -1,7 +1,7 @@
 # VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation
 
 <div align="center">
-  📖 <a href="#">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA-Demo/">Live Demo</a>
+  📖 <a href="#">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA/">Live Demo</a>
 </div>
 
 <p align="center">
@@ -21,7 +21,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 - **Two-Stage Training Strategy**: Align VLM hidden states with pretrained action models, then fine-tune key components for precise action generation.
 - **Simple Architecture**: Adds only minimal layers — state encoder and query token.
 - **Strong Performance**: Outperforms most VLAs on CALVIN ABC-D and LIBERO.
-<br clear="left"/> 
+  <br clear="left"/>
 
 ## 🧠 Method Overview
 
@@ -34,7 +34,6 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 1. **Discretization-based methods** convert actions into tokens and directly decode them using visual and language features, but omit **robot state information**, which is crucial for physical dynamics.
 2. **Diffusion-based approaches** extract vision-language features with a VLM, but offload action generation to an action expert, making the VLM a passive feature extractor.
 3. **Our method** introduces a **state encoder** and **action query token**, retains the full VLM, and distills knowledge from an expert model to achieve high reasoning and efficiency.
- 
 
 ## 📈 Benchmark Results
 
@@ -95,7 +94,6 @@ Our model achieves the highest average success rate across all task suites, outp
 </div>
 
 VITA-VLA achieves top performance across all tasks, demonstrating the strongest results in long-horizon and stacking scenarios, and validating its two-stage training strategy.
- 
 
 ## 📔 Get Started
 
@@ -163,7 +161,6 @@ Set `finetune_from_pretrained_ckpt` to the transfered VITA-VLA weights(only acti
 ```
 
 >
- 
 
 ### 🔎 Evaluation
 
@@ -187,7 +184,6 @@ Set `resume_from_checkpoint` to your trained weights
   url={https://arxiv.org/abs/2505.03739},
 }
 ``` -->
- 
 
 ## 🙏 Acknowledgements
 
