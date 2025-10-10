@@ -32,6 +32,18 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
   </tr>
 </table>
 
+<img src="./assets/logo_yt.png" alt="VITA-VLA Logo" width="120" align="left" style="margin-right:20px; margin-bottom:10px; border-radius:8px;">
+
+### ✨ Highlights
+
+- **Two-Stage Alignment Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
+- **Efficient Training**: Freeze most of the VLM and use a small expert model.
+- **Compact and Strong**: Adds only minimal layers — state encoder and query token.
+- **Strong Performance**: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.
+- **Open and Reproducible**: Based on public models and datasets.
+
+<br clear="left"/>
+
 <div style="display: flex; align-items: flex-start; gap: 20px;">
 
   <img src="./assets/logo_yt.png" width="120" style="border-radius: 10px; margin-top: 10px;">
