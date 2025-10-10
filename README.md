@@ -14,16 +14,23 @@
 
 We are thrilled to announce the launch of VITA-VLA — a powerful and streamlined vision-language-action (VLA) model that combines architectural simplicity with highly efficient training. Designed to unlock the full potential of pretrained vision-language models in embodied AI tasks. VITA-VLA introduces a novel two-stage alignment and fine-tuning strategy, enabling superior performance with minimal computational overhead. Whether in simulation or real-world robotic scenarios, VITA-VLA delivers state-of-the-art results while remaining lightweight, modular, and reproducible.
 
-<img src="./assets/logo_yt.png" width="100" class="image-left">
-
-✨ Highlights:
-
-- **Two-Stage Alignment Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
-- **Efficient Training**: Freeze most of the VLM and use a small expert model.
-
-- **Compact and Strong**: Adds only minimal layers — state encoder and query token.
-- **Strong Performance**: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.
-- **Open and Reproducible**: Based on public models and datasets.
+<table>
+  <tr>
+    <td valign="top" width="140">
+      <img src="./assets/logo_yt.png" width="120" style="border-radius:8px;" alt="logo" />
+    </td>
+    <td valign="top">
+      <p><strong>✨ Highlights</strong></p>
+      <ul>
+        <li><strong>Two-Stage Alignment Strategy</strong>: Hidden representation alignment with action models, followed by fine-tuning.</li>
+        <li><strong>Efficient Training</strong>: Freeze most of the VLM and use a small expert model.</li>
+        <li><strong>Compact and Strong</strong>: Adds only minimal layers — state encoder and query token.</li>
+        <li><strong>Strong Performance</strong>: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.</li>
+        <li><strong>Open and Reproducible</strong>: Based on public models and datasets.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 <div style="display: flex; align-items: flex-start; gap: 20px;">
 
