@@ -26,7 +26,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 ## 🧠 Method Overview
 
 <div align="center">
-  <img src="./assets/teaser.png" alt="Overview of VLA Architectures" width="75%"/>
+  <img src="./assets/teaser.png" alt="Overview of VLA Architectures" width="80%"/>
 </div>
 
 **Overview of mainstream VLA architectures.**
@@ -41,7 +41,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 **CALVIN ABC-D**
 
 <div align="center">
-  <img src="./assets/calvin.png" width="75%"/>  
+  <img src="./assets/calvin.png" width="80%"/>  
 </div>
 
 Our model demonstrates strong zero-shot generalization to unseen environments, achieving higher overall performance compared with existing VLA models. This highlights both the effectiveness of our two-stage distillation strategy and the importance of fine-tuning the VLM for action execution.
@@ -49,7 +49,7 @@ Our model demonstrates strong zero-shot generalization to unseen environments, a
 **LIBERO-LONG**
 
 <div align="center">
-  <img src="./assets/LIBERO_LONG.png" width="75%"/>  
+  <img src="./assets/LIBERO_LONG.png" width="80%"/>  
 </div>
 
 Our model achieves state-of-the-art performance, with a 5.8\% improvement over Seer-Large and a 1\% improvement over the fine-tuning-only strategy. These results validate the effectiveness of our approach in handling long-horizon tasks and complex instruction-following scenarios.
@@ -67,7 +67,7 @@ Our model achieves the highest average success rate across all task suites, outp
 ### 🛠️ Task Setup
 
 <div align="center">
-  <img src="./assets/real_setting.png" width="80%"/>
+  <img src="./assets/real_setting.png" width="90%"/>
 </div>
 
 - Platform: **ALOHA**
