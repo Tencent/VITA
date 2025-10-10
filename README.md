@@ -18,13 +18,10 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 
 ### ✨ Highlights
 
-- **Two-Stage Alignment Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
-- **Efficient Training**: Freeze most of the VLM and use a small expert model.
-- **Compact and Strong**: Adds only minimal layers — state encoder and query token.
-- **Strong Performance**: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.
-
+- **Two-Stage Training Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
+- **Simple Architecture**: Adds only minimal layers — state encoder and query token.
+- **Strong Performance**: Outperforms most VLAs on CALVIN ABC-D and LIBERO.
 <br clear="left"/>
-
 ---
 
 ## 🧠 Method Overview
@@ -78,10 +75,8 @@ Our model achieves the highest average success rate across all task suites, outp
 </div>
 
 - Platform: **ALOHA**
-- Control: 6-DoF arm + gripper width
+- Control: 6-DoF arm + 1-D gripper width
 - Tasks: Pick, Place, Close, Stack
-- Dataset: 500 demos (100 per task)
-- Gripper supervision: **L1 loss (weight=1000)**
 
 ### 🎬 Execution Demo
 
@@ -103,9 +98,7 @@ Our model achieves the highest average success rate across all task suites, outp
   <img src="./assets/REAL_result.png" width="50%"/>
 </div>
 
-- VITA-VLA achieves top performance across all tasks
-- Strongest in long-horizon and stacking scenarios
-- Validates two-stage training strategy
+VITA-VLA achieves top performance across all tasks, demonstrating the strongest results in long-horizon and stacking scenarios, and validating its two-stage training strategy.
 
 ---
 
