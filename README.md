@@ -14,13 +14,6 @@
 
 We are thrilled to announce the launch of VITA-VLA — a powerful and streamlined vision-language-action (VLA) model that combines architectural simplicity with highly efficient training. Designed to unlock the full potential of pretrained vision-language models in embodied AI tasks. VITA-VLA introduces a novel two-stage alignment and fine-tuning strategy, enabling superior performance with minimal computational overhead. Whether in simulation or real-world robotic scenarios, VITA-VLA delivers state-of-the-art results while remaining lightweight, modular, and reproducible.
 
-<!-- <style>
-  .image-left {
-    float: left;
-    margin-right: 40px;
-  }
-</style> -->
-
 <img src="./assets/logo_yt.png" width="100" class="image-left">
 
 ✨ Highlights:
@@ -31,6 +24,24 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 - **Compact and Strong**: Adds only minimal layers — state encoder and query token.
 - **Strong Performance**: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.
 - **Open and Reproducible**: Based on public models and datasets.
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+
+  <img src="./assets/logo_yt.png" width="120" style="border-radius: 10px; margin-top: 10px;">
+
+  <div>
+
+✨ **Highlights**
+
+- **Two-Stage Alignment Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
+- **Efficient Training**: Freeze most of the VLM and use a small expert model.
+- **Compact and Strong**: Adds only minimal layers — state encoder and query token.
+- **Strong Performance**: Outperforms SOTA under constrained budgets on CALVIN ABC-D and LIBERO.
+- **Open and Reproducible**: Based on public models and datasets.
+
+  </div>
+
+</div>
 
 ---
 
