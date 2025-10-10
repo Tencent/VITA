@@ -21,8 +21,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 - **Two-Stage Training Strategy**: Hidden representation alignment with action models, followed by fine-tuning.
 - **Simple Architecture**: Adds only minimal layers — state encoder and query token.
 - **Strong Performance**: Outperforms most VLAs on CALVIN ABC-D and LIBERO.
-<br clear="left"/>
----
+<br clear="left"/> 
 
 ## 🧠 Method Overview
 
@@ -35,8 +34,7 @@ We are thrilled to announce the launch of VITA-VLA — a powerful and streamline
 1. **Discretization-based methods** convert actions into tokens and directly decode them using visual and language features, but omit **robot state information**, which is crucial for physical dynamics.
 2. **Diffusion-based approaches** extract vision-language features with a VLM, but offload action generation to an action expert, making the VLM a passive feature extractor.
 3. **Our method** introduces a **state encoder** and **action query token**, retains the full VLM, and distills knowledge from an expert model to achieve high reasoning and efficiency.
-
----
+ 
 
 ## 📈 Benchmark Results
 
@@ -63,8 +61,6 @@ Our model achieves state-of-the-art performance, with a 5.8\% improvement over S
 </div>
 
 Our model achieves the highest average success rate across all task suites, outperforming existing VLA models by a significant margin. In particular, it improves the previous best result on LIBERO-LONG by 24.5\%, reaching a 97.3\% success rate. These findings demonstrate that our framework effectively combines the reasoning capacity of large-scale VLMs with the efficient action modeling of small action models.
-
----
 
 ## 🌍 Real-World Experiment
 
@@ -99,8 +95,7 @@ Our model achieves the highest average success rate across all task suites, outp
 </div>
 
 VITA-VLA achieves top performance across all tasks, demonstrating the strongest results in long-horizon and stacking scenarios, and validating its two-stage training strategy.
-
----
+ 
 
 ## 📔 Get Started
 
@@ -168,8 +163,7 @@ Set `finetune_from_pretrained_ckpt` to the transfered VITA-VLA weights(only acti
 ```
 
 >
-
----
+ 
 
 ### 🔎 Evaluation
 
@@ -193,8 +187,7 @@ Set `resume_from_checkpoint` to your trained weights
   url={https://arxiv.org/abs/2505.03739},
 }
 ``` -->
-
----
+ 
 
 ## 🙏 Acknowledgements
 
