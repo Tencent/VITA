@@ -14,12 +14,12 @@
 
 We are thrilled to announce the launch of VITA-VLA — a powerful and streamlined vision-language-action (VLA) model that combines architectural simplicity with highly efficient training. Designed to unlock the full potential of pretrained vision-language models in embodied AI tasks. VITA-VLA introduces a novel two-stage alignment and fine-tuning strategy, enabling superior performance with minimal computational overhead. Whether in simulation or real-world robotic scenarios, VITA-VLA delivers state-of-the-art results while remaining lightweight, modular, and reproducible.
 
-<style>
+<!-- <style>
   .image-left {
     float: left;
-    margin-right: 40px; 
+    margin-right: 40px;
   }
-</style>
+</style> -->
 
 <img src="./assets/logo_yt.png" width="100" class="image-left">
 
