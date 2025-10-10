@@ -187,7 +187,7 @@ Set `resume_from_checkpoint` to your trained weights
 
 ## 🙏 Acknowledgements
 
-- [Seer](https://github.com/InternRobotics/Seer)
 - [VITA](https://github.com/VITA-MLLM/VITA)
+- [Seer](https://github.com/InternRobotics/Seer)
 - [CALVIN](https://github.com/mees/calvin)
 - [LIBERO](https://github.com/LIBERO-Projects/LIBERO)
