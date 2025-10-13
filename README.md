@@ -169,7 +169,7 @@ bash scripts/CALVIN_ABC_D/eval_ft_nofrevlm_pt_frevlm_from_2pth.sh
 Set `resume_from_checkpoint` to your trained weights
 ```
 
-## 📝 Citation -->
+## 📝 Citation
 
 ```bibtex
 @misc{
