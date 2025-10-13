@@ -177,7 +177,7 @@ If you find our work helpful for your research, please consider citing the follo
 @article{dong2025vita-vla,
       title={VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation},
       author={Shaoqi Dong and Chaoyou Fu and Haihan Gao and Yi-Fan Zhang and Chi Yan and Chu Wu and Xiaoyu Liu and Yunhang Shen and Jing Huo and Deqiang Jiang and Haoyu Cao and Yang Gao and Xing Sun and Ran He and Caifeng Shan},
-      journal={arXiv preprint arXiv:2501.01957},
+      journal={arXiv preprint arXiv:2510.09607},
       year={2025}
 }
 ```
