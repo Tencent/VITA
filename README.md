@@ -172,15 +172,13 @@ Set `resume_from_checkpoint` to your trained weights
 ## 📝 Citation
 
 If you find our work helpful for your research, please consider citing the following BibTeX entry.
+
 ```bibtex
-@misc{
+@article{dong2025vita-vla,
       title={VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation},
       author={Shaoqi Dong and Chaoyou Fu and Haihan Gao and Yi-Fan Zhang and Chi Yan and Chu Wu and Xiaoyu Liu and Yunhang Shen and Jing Huo and Deqiang Jiang and Haoyu Cao and Yang Gao and Xing Sun and Ran He and Caifeng Shan},
-      year={2025},
-      eprint={2510.09607},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2510.09607},
+      journal={arXiv preprint arXiv:2501.01957},
+      year={2025}
 }
 ```
 
