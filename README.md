@@ -1,7 +1,7 @@
 # VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation
 
 <div align="center">
-  📖 <a href="#">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA/">Live Demo</a>
+  📖 <a href="https://arxiv.org/abs/2510.09607">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA/">Live Demo</a>
 </div>
 
 <p align="center">
@@ -169,21 +169,19 @@ bash scripts/CALVIN_ABC_D/eval_ft_nofrevlm_pt_frevlm_from_2pth.sh
 Set `resume_from_checkpoint` to your trained weights
 ```
 
-<!-- --- -->
+## 📝 Citation -->
 
-<!-- ## 📝 Citation -->
-
-<!-- ```bibtex
-@misc{,
-  title={VITA-VLA: Fast Interleaved Cross-Modal Token Generation for Efficient Large Speech-Language Model},
-  author={Zuwei Long and Yunhang Shen and Chaoyou Fu and Heting Gao and Lijiang Li and Peixian Chen and Mengdan Zhang and Hang Shao and Jian Li and Jinlong Peng and Haoyu Cao and Ke Li and Rongrong Ji and Xing Sun},
-  year={2025},
-  eprint={2505.03739},
-  archivePrefix={arXiv},
-  primaryClass={cs.CL},
-  url={https://arxiv.org/abs/2505.03739},
+```bibtex
+@misc{
+      title={VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation},
+      author={Shaoqi Dong and Chaoyou Fu and Haihan Gao and Yi-Fan Zhang and Chi Yan and Chu Wu and Xiaoyu Liu and Yunhang Shen and Jing Huo and Deqiang Jiang and Haoyu Cao and Yang Gao and Xing Sun and Ran He and Caifeng Shan},
+      year={2025},
+      eprint={2510.09607},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2510.09607},
 }
-``` -->
+```
 
 ## 🙏 Acknowledgements
 
