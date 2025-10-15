@@ -176,7 +176,7 @@ If you find our work helpful for your research, please consider citing the follo
 ```bibtex
 @article{dong2025vita-vla,
       title={VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation},
-      author={Shaoqi Dong and Chaoyou Fu and Haihan Gao and Yi-Fan Zhang and Chi Yan and Chu Wu and Xiaoyu Liu and Yunhang Shen and Jing Huo and Deqiang Jiang and Haoyu Cao and Yang Gao and Xing Sun and Ran He and Caifeng Shan},
+      author={Dong, Shaoqi and Fu, Chaoyou and Gao, Haihan and Zhang, Yi-Fan and Yan, Chi and Wu, Chu and Liu, Xiaoyu and Shen, Yunhang and Huo, Jing and Jiang, Deqiang and Cao, Haoyu and Gao, Yang and Sun, Xing and He, Ran and Shan, Caifeng},
       journal={arXiv preprint arXiv:2510.09607},
       year={2025}
 }
