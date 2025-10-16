@@ -171,7 +171,7 @@ def load_model(
     audio_encoder = vita_model.get_audio_encoder()
     audio_encoder.to(device=device, dtype=torch.bfloat16)
     audio_processor = audio_encoder.audio_processor
-
+    
     # 预计算用于动作结束判定的token id序列
     action_end_token_ids = tokenizer.encode(END_TOKEN, add_special_tokens=False)
     print(f"{Colors.MAGENTA}END token id heads: {action_end_token_ids[:1]}{Colors.RESET}")
@@ -472,9 +472,7 @@ def load_model(
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    print(f"{Colors.MAGENTA}LLM {llm_id} worker_ready: {worker_ready}{Colors.RESET}")
     worker_ready.set()
-    print(f"{Colors.MAGENTA}LLM {llm_id} worker_ready status updated: {worker_ready}{Colors.RESET}")
     if not isinstance(wait_workers_ready, list):
         wait_workers_ready = [wait_workers_ready]
 
