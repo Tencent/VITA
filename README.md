@@ -1,4 +1,4 @@
-# VITA-E: A Dual-Model Framework for Real-Time, Interruptible, and Concurrent Human-Robot Interaction
+# VITA-E: Natural Human-Robot Interaction with Concurrent Seeing, Hearing, Speaking, and Acting
 
 
 <div align="center">
@@ -17,7 +17,7 @@
 
 <p align="center">
   <img src="./asset/vita-e-demo.png" width="70%" height="70%"><br>
-  VITA-E can handle various complex interactive scenarios, including nearly real-time interruption and concurrency.<br>
+  VITA-E can handle various complex interactive scenarios, including nearly real-time concurrency and interruption.<br>
   <a href="https://www.youtube.com/watch?v=05UJ-AV2o1Q">📽 VITA-E Demo Show! Here We Go! 🔥</a><br>
 </p>
 
@@ -162,7 +162,7 @@ If you find our work helpful for your research, please consider citing our work.
 
 ```bibtex
 @article{liu2025vitae,
-  title={VITA-E: A Dual-Model Framework for Real-Time, Interruptible, and Concurrent Human-Robot Interaction},
+  title={VITA-E: Natural Human-Robot Interaction with Concurrent Seeing, Hearing, Speaking, and Acting},
   author={Liu, Xiaoyu and Fu, Chaoyou and Yan, Chi and Gao, Haihan and Zhang, Yi-Fan and Wu, Chu and Dong, Shaoqi and Qian, Cheng and Luo, Bin and Yang, Xiuyong and Li, Guanwu and Cai, Yusheng and Shen, Yunhang and Jiang, Deqiang and Cao, Haoyu and Sun, Xing and Shan, Caifeng and He, Ran},
   journal={arXiv preprint arXiv:2510.XXXXX},
   year={2025}
