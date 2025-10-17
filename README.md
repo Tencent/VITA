@@ -17,7 +17,7 @@
 
 <p align="center">
   <img src="./asset/vita-e-demo.png" width="70%" height="70%"><br>
-  VITA-E can handle various complex interactive scenarios, including nearly real-time concurrency and interruption.<br>
+  VITA-E can handle various complex interactive scenarios, including concurrency and nearly real-time interruption.<br>
   <a href="https://www.youtube.com/watch?v=05UJ-AV2o1Q">📽 VITA-E Demo Show! Here We Go! 🔥</a><br>
 </p>
 
