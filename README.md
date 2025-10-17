@@ -1,4 +1,4 @@
-# VITA-E: Natural Human-Robot Interaction with Concurrent Seeing, Hearing, Speaking, and Acting
+# VITA-E: Natural Embodied Interaction with Concurrent Seeing, Hearing, Speaking, and Acting
 
 
 <div align="center">
@@ -162,7 +162,7 @@ If you find our work helpful for your research, please consider citing our work.
 
 ```bibtex
 @article{liu2025vitae,
-  title={VITA-E: Natural Human-Robot Interaction with Concurrent Seeing, Hearing, Speaking, and Acting},
+  title={VITA-E: Natural Embodied Interaction with Concurrent Seeing, Hearing, Speaking, and Acting},
   author={Liu, Xiaoyu and Fu, Chaoyou and Yan, Chi and Gao, Haihan and Zhang, Yi-Fan and Wu, Chu and Dong, Shaoqi and Qian, Cheng and Luo, Bin and Yang, Xiuyong and Li, Guanwu and Cai, Yusheng and Shen, Yunhang and Jiang, Deqiang and Cao, Haoyu and Sun, Xing and Shan, Caifeng and He, Ran},
   journal={arXiv preprint arXiv:2510.XXXXX},
   year={2025}
