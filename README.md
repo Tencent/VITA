@@ -2,15 +2,15 @@
 
 
 <div align="center">
-  📖 <a href="https://arxiv.org/abs/2510.xxx">Paper</a> · 🤖 <a href="https://huggingface.co/VITA-MLLM/VITA-E">Model Weights</a> · 🚀 <a href="https://www.youtube.com/watch?v=05UJ-AV2o1Q">Live Demo</a>
+  🌐 <a href="https://lxysl.github.io/VITA-E/">Project Page</a> · 📖 <a href="https://arxiv.org/abs/2510.xxx">Paper</a> · 🤖 <a href="https://huggingface.co/VITA-MLLM/VITA-E">Model Weights</a> · 🚀 <a href="https://youtu.be/jplQ0R50kfU">Live Demo</a>
 </div>
 
 <p align="center">
-  | <a href="#-vita-e-overview"><b>🗺️ Overview</b></a> 
-  | <a href="#-experimental-results"><b>📊 Experimental Results</b></a> 
-  | <a href="#-get-started"><b>⚡ Get Started</b></a> 
-  | <a href="#-inference-demo"><b>💻 Inference & Demo</b></a> 
-  | <a href="#-training"><b>🔥 Training</b></a> 
+  | <a href="#overview"><b>🗺️ Overview</b></a> 
+  | <a href="#experimental-results"><b>📊 Experimental Results</b></a> 
+  | <a href="#get-started"><b>⚡ Get Started</b></a> 
+  | <a href="#inference-demo"><b>💻 Inference & Demo</b></a> 
+  | <a href="#training"><b>🔥 Training</b></a> 
   |
 </p>
 
@@ -18,9 +18,10 @@
 <p align="center">
   <img src="./asset/vita-e-demo.png" width="70%" height="70%"><br>
   VITA-E can handle various complex interactive scenarios, including concurrency and nearly real-time interruption.<br>
-  <a href="https://www.youtube.com/watch?v=05UJ-AV2o1Q">📽 VITA-E Demo Show! Here We Go! 🔥</a><br>
+  <a href="https://youtu.be/jplQ0R50kfU">📽 VITA-E Demo Show! Here We Go! 🔥</a><br>
 </p>
 
+<a id="overview"></a>
 ## 🗺️ VITA-E Overview
 
 <table>
@@ -44,6 +45,7 @@ We are excited to present **VITA-E**, which incorporates a series of advancement
   </tr>
 </table>
 
+<a id="experimental-results"></a>
 ## 📊 Experimental Results
 
 - **Success rate comparison of VITA-E and baseline models on two fundamental manipulation tasks.**
@@ -78,6 +80,7 @@ We are excited to present **VITA-E**, which incorporates a series of advancement
 </div>
 
 
+<a id="get-started"></a>
 ## ⚡ Get Started
 
 Install conda environment.
@@ -98,6 +101,7 @@ Download the required model weights to local path: [VITA-E](https://huggingface.
 huggingface-cli download VITA-MLLM/VITA-E --local-dir checkpoints/VITA-E
 ```
 
+<a id="inference-demo"></a>
 ## 💻 Inference & Demo
 
 ### 📍 Inference
@@ -148,6 +152,7 @@ cd demo
 python vla_robot_client.py
 ```
 
+<a id="training"></a>
 ## 🔥 Training
 
 Our VITA-E model is built upon the VITA-1.5 and Isaac-GR00T architectures. We leverage VITA-1.5 as the VLM component and integrate Isaac-GR00T's pre-trained diffusion action expert as the action model.
