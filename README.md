@@ -1,7 +1,7 @@
 # VITA-VLA: Efficiently Teaching Vision-Language Models to Act via Action Expert Distillation
 
 <div align="center">
-  📖 <a href="https://arxiv.org/abs/2510.09607">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA/">Live Demo</a>
+  📖 <a href="https://arxiv.org/abs/2510.09607">Paper</a> · 🤖 <a href="https://huggingface.co/ShaoqiDong/VITA-VLA/">Model Weights</a> · 🚀 <a href="https://ltbai.github.io/VITA-VLA/">Project Page</a>
 </div>
 
 <p align="center">
