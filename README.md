@@ -2,7 +2,7 @@
 
 
 <div align="center">
-  🌐 <a href="https://lxysl.github.io/VITA-E/">Project Page</a> · 📖 <a href="https://arxiv.org/abs/2510.xxx">Paper</a> · 🤖 <a href="https://huggingface.co/VITA-MLLM/VITA-E">Model Weights</a> · 🚀 <a href="https://youtu.be/jplQ0R50kfU">Live Demo</a>
+  🌐 <a href="https://lxysl.github.io/VITA-E/">Project Page</a> · 📖 <a href="https://arxiv.org/abs/2510.21817">Paper</a> · 🤖 <a href="https://huggingface.co/VITA-MLLM/VITA-E">Model Weights</a> · 🚀 <a href="https://youtu.be/jplQ0R50kfU">Live Demo</a>
 </div>
 
 <p align="center">
@@ -168,8 +168,8 @@ If you find our work helpful for your research, please consider citing our work.
 ```bibtex
 @article{liu2025vitae,
   title={VITA-E: Natural Embodied Interaction with Concurrent Seeing, Hearing, Speaking, and Acting},
-  author={Liu, Xiaoyu and Fu, Chaoyou and Yan, Chi and Gao, Haihan and Zhang, Yi-Fan and Wu, Chu and Dong, Shaoqi and Qian, Cheng and Luo, Bin and Yang, Xiuyong and Li, Guanwu and Cai, Yusheng and Shen, Yunhang and Jiang, Deqiang and Cao, Haoyu and Sun, Xing and Shan, Caifeng and He, Ran},
-  journal={arXiv preprint arXiv:2510.XXXXX},
+  author={Xiaoyu, Liu and Chaoyou, Fu and Chi, Yan and Chu, Wu and Haihan, Gao and Yi-Fan, Zhang and Shaoqi, Dong and Cheng, Qian and Bin, Luo and Xiuyong, Yang and Guanwu, Li and Yusheng, Cai and Yunhang, Shen and Deqiang, Jiang and Haoyu, Cao and Xing, Sun and Caifeng, Shan and Ran, He},
+  journal={arXiv preprint arXiv:2510.21817},
   year={2025}
 }
 ```
